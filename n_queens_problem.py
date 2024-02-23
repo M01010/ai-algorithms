@@ -11,7 +11,7 @@ class NQueensProblem(Problem):
         self.initial_state = self.random_state()
 
     def random_state(self) -> list[int]:
-        # state = [n numbers 1 to n]
+        # state = [n integers 1 to n]
         state = []
         nums = list(range(1, self.n + 1))
         while nums:
@@ -33,7 +33,7 @@ class NQueensProblem(Problem):
             for j in range(i + 1, len(node.state)):
                 state_copy = node.state.copy()
                 state_copy[i], state_copy[j] = state_copy[j], state_copy[i]
-                new_node = Node(state_copy, node.f, node.path_cost + 1, node)
+                new_node = Node(state=state_copy, heuristic_fn=node.f, parent=node, path_cost=node.depth+1)
                 new_nodes.append(new_node)
         return new_nodes
 
