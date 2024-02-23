@@ -1,19 +1,19 @@
 import random
 
-from node import Node
-from problem import Problem
+from search_algorithms.abstract_types import Node, Problem
 
 
 class NQueensProblem(Problem):
 
-    def __init__(self, n):
+    def __init__(self, n, seed=None):
         self.n = n
-        self.initial = self.random_state(n)
+        random.seed(seed)
+        self.initial_state = self.random_state()
 
-    @staticmethod
-    def random_state(n) -> list[int]:
+    def random_state(self) -> list[int]:
+        # state = [n numbers 1 to n]
         state = []
-        nums = list(range(1, n + 1))
+        nums = list(range(1, self.n + 1))
         while nums:
             c = random.choice(nums)
             state.append(c)
@@ -37,5 +37,27 @@ class NQueensProblem(Problem):
                 new_nodes.append(new_node)
         return new_nodes
 
-    def get_initial(self):
-        return self.initial
+    @property
+    def initial(self):
+        return self.initial_state
+
+
+def num_queens_endangered(node: Node) -> float:
+    state = node.state
+    endangered = 0
+    for i in range(len(state)):
+        for j in range(i + 1, len(state)):
+            if abs(state[j] - state[i]) == j - i:
+                endangered += 1
+                break
+    return endangered
+
+
+def collisions(node: Node) -> float:
+    state = node.state
+    diagonal_collision = 0
+    for i in range(len(state)):
+        for j in range(i + 1, len(state)):
+            if abs(state[j] - state[i]) == j - i:
+                diagonal_collision += 1
+    return diagonal_collision
