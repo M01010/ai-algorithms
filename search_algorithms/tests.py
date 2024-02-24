@@ -1,42 +1,25 @@
 import time
-from dataclasses import dataclass
 
-from search_algorithms.abstract_types import Problem, SearchAlgorithm, HeuristicSearchAlgorithm
-
-
-@dataclass
-class Stats:
-    algorithm: SearchAlgorithm
-    avg_time: float
-    accuracy: float
+from search_algorithms.data_types import SearchAlgorithm, Problem, Stats
 
 
-def analyze_algorithms(problems: list[Problem], algorithms: list[SearchAlgorithm]) -> list[Stats]:
+def analyze_algorithms(algorithms: list[SearchAlgorithm], problems: list[Problem]) -> list[Stats]:
     """
     analyze algorithms with problems
     """
-    stats = []
-    for algorithm in algorithms:
-        start = time.time()
-        accuracy = test_algorithm_accuracy(problems, algorithm)
-        time_diff = time.time() - start
-        avg_time = time_diff / len(problems)
-        stats.append(Stats(algorithm, avg_time, accuracy))
-    stats = sorted(stats, key=lambda x: x.avg_time)
-    return stats
+    stats = [analyze_algorithm(a, problems) for a in algorithms]
+    return sorted(stats, key=lambda x: x.avg_time)
 
 
-def show_stats(stats: list[Stats]):
-    for s in stats:
-        if isinstance(s.algorithm, HeuristicSearchAlgorithm):
-            print(f'algorithm: {type(s.algorithm).__name__}, heuristic: {s.algorithm.heuristic.__name__}')
-        else:
-            print(f'algorithm: {type(s.algorithm).__name__}')
-        print(f'time: {round(s.avg_time, 6)} Seconds, accuracy: {round(s.accuracy * 100, 6)}%')
-        print()
+def analyze_algorithm(algorithm: SearchAlgorithm, problems: list[Problem]) -> Stats:
+    start = time.time()
+    accuracy = test_algorithm_accuracy(algorithm, problems)
+    time_diff = time.time() - start
+    avg_time = time_diff / len(problems)
+    return Stats(algorithm, avg_time, accuracy)
 
 
-def test_algorithm_speed(problems: list[Problem], search_algorithm: SearchAlgorithm):
+def test_algorithm_speed(search_algorithm: SearchAlgorithm, problems: list[Problem]) -> float:
     """
     tests algorithm and heuristic function any number of iterations and returns average time
     """
@@ -48,7 +31,7 @@ def test_algorithm_speed(problems: list[Problem], search_algorithm: SearchAlgori
     return avg_time
 
 
-def test_algorithm_accuracy(problems: list[Problem], search_algorithm: SearchAlgorithm):
+def test_algorithm_accuracy(search_algorithm: SearchAlgorithm, problems: list[Problem]) -> float:
     """
     tests algorithm and heuristic function on a list of different problems and returns accuracy
     """

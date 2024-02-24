@@ -1,16 +1,11 @@
-from enum import auto, Enum
 from queue import PriorityQueue, LifoQueue
 
-from search_algorithms.abstract_types import Problem, Node, SearchAlgorithm, HeuristicSearchAlgorithm, HeuristicFunction
-
-
-class SolutionType(Enum):
-    Cutoff = auto()
-    Failure = auto()
+from search_algorithms.data_types import HeuristicSearchAlgorithm, Problem, Node, HeuristicFunction, \
+    SearchAlgorithm, SolutionType
 
 
 class GreedyBestFirstSearch(HeuristicSearchAlgorithm):
-    def __init__(self, heuristic):
+    def __init__(self, heuristic: HeuristicFunction):
         self.heuristic_function = heuristic
 
     @property
@@ -42,7 +37,7 @@ class GreedyBestFirstSearch(HeuristicSearchAlgorithm):
 
 
 class BestFirstSearch(HeuristicSearchAlgorithm):
-    def __init__(self, heuristic):
+    def __init__(self, heuristic: HeuristicFunction):
         self.heuristic_function = heuristic
 
     @property
@@ -67,8 +62,7 @@ class BestFirstSearch(HeuristicSearchAlgorithm):
 
 
 class AStarSearch(HeuristicSearchAlgorithm):
-    def __init__(self, heuristic):
-
+    def __init__(self, heuristic: HeuristicFunction):
         self.heuristic_function = heuristic
 
     @property
@@ -78,6 +72,7 @@ class AStarSearch(HeuristicSearchAlgorithm):
     def solve(self, problem: Problem) -> Node | None:
         def gn_hn(node):
             return node.path_cost + self.heuristic(node)
+
         return BestFirstSearch(gn_hn).solve(problem)
 
 
@@ -130,7 +125,7 @@ class DepthFirstSearch(SearchAlgorithm):
 
 
 class DepthLimitedSearch(SearchAlgorithm):
-    def __init__(self, limit):
+    def __init__(self, limit: int):
         self.limit = limit
 
     def solve(self, problem: Problem):
@@ -156,7 +151,7 @@ class DepthLimitedSearch(SearchAlgorithm):
 
 class IterativeDeepeningSearch(SearchAlgorithm):
     def solve(self, problem: Problem):
-        for d in range(0, 100):
+        for d in range(0, 10):
             sol = DepthLimitedSearch(d).solve(problem)
             if sol != SolutionType.Cutoff:
                 return sol

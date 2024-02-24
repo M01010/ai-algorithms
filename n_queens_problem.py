@@ -1,6 +1,6 @@
 import random
 
-from search_algorithms.abstract_types import Node, Problem
+from search_algorithms.data_types import Node, Problem
 
 
 class NQueensProblem(Problem):
