@@ -17,9 +17,15 @@ class SearchAlgorithm(ABC):
         """
         pass
 
+    def __str__(self):
+        return f'algorithm: {type(self).__name__}'
+
 
 class HeuristicSearchAlgorithm(SearchAlgorithm):
     @property
     @abstractmethod
     def heuristic(self) -> HeuristicFunction:
         pass
+
+    def __str__(self):
+        return f'algorithm: {type(self).__name__}, heuristic: {self.heuristic.__name__}'
